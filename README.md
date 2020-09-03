@@ -4,3 +4,6 @@
 My first repository
 
 another edit
+
+I am a CS student at NJIT
+
