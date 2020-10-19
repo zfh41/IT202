@@ -2,10 +2,14 @@
 
 <?php
 if (isset($_POST["register"])) {
+    $id = null;
     $email = null;
     $password = null;
     $confirm = null;
     $username = null;
+    if (isset($_POST["id"])) {
+        $id=$_POST["id"];
+    }
     if (isset($_POST["email"])) {
         $email = $_POST["email"];
     }
