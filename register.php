@@ -74,14 +74,14 @@ if (!isset($username)) {
 }
 ?>
 <form method="POST">
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" required value="<?php safer_echo($email); ?>"/>
-    <label for="user">Username:</label>
-    <input type="text" id="user" name="username" required maxlength="60" value="<?php safer_echo($username); ?>"/>
-    <label for="p1">Password:</label>
-    <input type="password" id="p1" name="password" required/>
-    <label for="p2">Confirm Password:</label>
-    <input type="password" id="p2" name="confirm" required/>
+    <label style="font-family: Geneva" for="email">Email:</label>
+    <input type="email" id="email" name="email" required value="<?php safer_echo($email); ?>"/> <br/> <br/>
+    <label style="font-family: Geneva" for="user">Username:</label>
+    <input type="text" id="user" name="username" required maxlength="60" value="<?php safer_echo($username); ?>"/> <br/> <br/>
+    <label style="font-family: Geneva" for="p1">Password:</label>
+    <input type="password" id="p1" name="password" required/> <br/> <br/>
+    <label style="font-family: Geneva" for="p2">Confirm Password:</label>
+    <input type="password" id="p2" name="confirm" required/> <br/> <br/>
     <input type="submit" name="register" value="Register"/>
 </form>
 

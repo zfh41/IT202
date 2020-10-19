@@ -1,9 +1,9 @@
 <?php require_once(__DIR__ . "/partials/nav.php"); ?>
 <form method="POST">
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" required/>
-    <label for="p1">Password:</label>
-    <input type="password" id="p1" name="password" required/>
+    <label style="font-family:verdana" for="email">Email:</label>
+    <input type="email" id="email" name="email" required/><br/><br/>
+    <label style="font-family:verdana" for="p1">Password:</label>
+    <input type="password" id="p1" name="password" required/><br/><br/>
     <input type="submit" name="login" value="Login"/>
 </form>
 
@@ -32,7 +32,6 @@ if (isset($_POST["login"])) {
 
             $params = array(":email" => $email);
             $r = $stmt->execute($params);
-            echo "db returned: " . var_export($r, true);
             $e = $stmt->errorInfo();
             if ($e[0] != "00000") {
                 echo "uh oh something went wrong: " . var_export($e, true);
@@ -59,7 +58,7 @@ SELECT Roles.name FROM Roles JOIN UserRoles on Roles.id = UserRoles.role_id wher
                     header("Location: home.php");
                 }
                 else {
-                    echo "<br>Invalid password, get out!<br>";
+                    echo "<br>Sorry, this is an incorrect password! Please try again!<br>";
                 }
             }
             else {
