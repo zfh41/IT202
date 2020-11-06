@@ -47,4 +47,48 @@ function safer_echo($var) {
     echo htmlspecialchars($var, ENT_QUOTES, "UTF-8");
 }
 
+//for flash feature
+function flash($msg) {
+    if (isset($_SESSION['flash'])) {
+        array_push($_SESSION['flash'], $msg);
+    }
+    else {
+        $_SESSION['flash'] = array();
+        array_push($_SESSION['flash'], $msg);
+    }
+
+}
+
+function getMessages() {
+    if (isset($_SESSION['flash'])) {
+        $flashes = $_SESSION['flash'];
+        $_SESSION['flash'] = array();
+        return $flashes;
+    }
+    return array();
+}
+
+//end flash
+
+function getState($n) {
+    switch ($n) {
+        case 0:
+            echo "Incubating";
+            break;
+        case 1:
+            echo "Hatching";
+            break;
+        case 2:
+            echo "Hatched";
+            break;
+        case 3:
+            echo "Expired";
+            break;
+        default:
+            echo "Unsupported state: " . safer_echo($n);
+            break;
+    }
+}
+
+
 ?>
