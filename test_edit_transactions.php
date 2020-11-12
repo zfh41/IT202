@@ -6,10 +6,15 @@ if (!has_role("Admin")) {
     die(header("Location: login.php"));
 }
 ?>
+<?php
+//we'll put this at the top so both php block have access to it
+if(isset($_GET["id"])){
+	$id = $_GET["id"];
+}
+?>
 
 <?php
 function do_bank_action($account1, $account2, $amountChange, $type){
-        $conn_string = "mysql:host=$host;dbname=$database;charset=utf8mb4";
         $db = getDB();
         $stmt = $db->prepare("select sum(amount) as ExpectedTotal from Transactions where act_src_id = :id"); 
         $stmt->execute([":id"=>$account1]);
@@ -18,13 +23,13 @@ function do_bank_action($account1, $account2, $amountChange, $type){
         $a1total -= $amountChange;
 
 
-
+		$stmt = $db->prepare("select sum(amount) as ExpectedTotal from Transactions where act_src_id = :id");
         $stmt->execute([":id"=>$account2]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         $a2total = (int)$result["ExpectedTotal"];
         $a2total += $amountChange;
 
-        $query = "INSERT INTO `Transactions` (`act_src_id`, `act_dest_id`, `amount`, `action_type`, `expected_total`) 
+        $query = "UPDATE `Transactions` (`act_src_id`, `act_dest_id`, `amount`, `action_type`, `expected_total`) 
         VALUES(:p1a1, :p1a2, :p1change, :type, :a1total), 
                         (:p2a1, :p2a2, :p2change, :type, :a2total)";
 
@@ -46,28 +51,38 @@ function do_bank_action($account1, $account2, $amountChange, $type){
         return $result;
 }
 ?>
-<form method="POST">
-        <input type="text" name="account1" placeholder="Account Number">
-        <select name="action_type">
-                <option value=0>deposit</option>
-                <option value=1>withdrawal</option>
-                <option value=2>transfer</option>
-        </select>
-        <!-- If our sample is a transfer show other account field-->
-        <?php if($_GET['action_type'] == 'transaction') : ?>
-        <input type="text" name="account2" placeholder="Other Account Number">
-        <?php endif; ?>
-
-        <input type="number" name="amount" placeholder="$0.00"/>
-        <input type="hidden" name="type" value="<?php echo $_GET['action_type'];?>"/>
-
-        <!--Based on sample type change the submit button display-->
-        <input type="submit" value="Move Money"/>
-</form>
 
 <?php
-if(isset($_POST['type']) && isset($_POST['account1']) && isset($_POST['amount'])){
-        $type = $_POST['action_type'];
+//fetching
+$result = [];
+if(isset($id)){
+	$id = $_GET["id"];
+	$db = getDB();
+	$stmt = $db->prepare("SELECT * FROM Transactions where id = :id");
+	$r = $stmt->execute([":id"=>$id]);
+	$result = $stmt->fetch(PDO::FETCH_ASSOC);
+}
+?>
+
+
+<form method="POST">
+        <input type="text" name="account1" placeholder="Account Number" value="<?php echo $result["id"];?>">
+
+        <?php if($result['action_type'] == 'transfer') : ?>
+        <input type="text" name="account2" placeholder="Other Account Number" value="<?php echo $result["act_dest_id"];?>">
+        <?php endif; ?>
+        
+        <input type="number" name="amount" placeholder="$0.00" value="<?php echo $result["amount"];?>"/>
+        <input type="hidden" name="type" value="<?php echo $result['action_type'];?>"/>
+        
+        <!--Based on sample type change the submit button display-->
+        <input type="submit" name="save" value="Move Money"/>
+</form>
+
+
+<?php
+if(isset($_POST['save'])){
+        $type = $_POST['type'];
         $amount = (int)$_POST['amount'];
         switch($type){
                 case 'deposit':

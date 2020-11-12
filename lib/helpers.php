@@ -73,16 +73,13 @@ function getMessages() {
 function getState($n) {
     switch ($n) {
         case 0:
-            echo "Incubating";
+            echo "Checking";
             break;
         case 1:
-            echo "Hatching";
+            echo "Saving";
             break;
         case 2:
-            echo "Hatched";
-            break;
-        case 3:
-            echo "Expired";
+            echo "Loan";
             break;
         default:
             echo "Unsupported state: " . safer_echo($n);
