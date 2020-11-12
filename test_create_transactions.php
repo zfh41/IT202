@@ -9,7 +9,6 @@ if (!has_role("Admin")) {
 
 <?php
 function do_bank_action($account1, $account2, $amountChange, $type){
-        $conn_string = "mysql:host=$host;dbname=$database;charset=utf8mb4";
         $db = getDB();
         $stmt = $db->prepare("select sum(amount) as ExpectedTotal from Transactions where act_src_id = :id"); 
         $stmt->execute([":id"=>$account1]);
@@ -18,7 +17,7 @@ function do_bank_action($account1, $account2, $amountChange, $type){
         $a1total -= $amountChange;
 
 
-
+        $stmt = $db->prepare("select sum(amount) as ExpectedTotal from Transactions where act_src_id = :id");
         $stmt->execute([":id"=>$account2]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         $a2total = (int)$result["ExpectedTotal"];
@@ -48,26 +47,21 @@ function do_bank_action($account1, $account2, $amountChange, $type){
 ?>
 <form method="POST">
         <input type="text" name="account1" placeholder="Account Number">
-        <select name="action_type">
-                <option value=0>deposit</option>
-                <option value=1>withdrawal</option>
-                <option value=2>transfer</option>
-        </select>
-        <!-- If our sample is a transfer show other account field-->
-        <?php if($_GET['action_type'] == 'transaction') : ?>
+
+        <?php if($_GET['type'] == 'transfer') : ?>
         <input type="text" name="account2" placeholder="Other Account Number">
         <?php endif; ?>
-
+        
         <input type="number" name="amount" placeholder="$0.00"/>
-        <input type="hidden" name="type" value="<?php echo $_GET['action_type'];?>"/>
-
+        <input type="hidden" name="type" value="<?php echo $_GET['type'];?>"/>
+        
         <!--Based on sample type change the submit button display-->
         <input type="submit" value="Move Money"/>
 </form>
 
 <?php
 if(isset($_POST['type']) && isset($_POST['account1']) && isset($_POST['amount'])){
-        $type = $_POST['action_type'];
+        $type = $_POST['type'];
         $amount = (int)$_POST['amount'];
         switch($type){
                 case 'deposit':
