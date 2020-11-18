@@ -61,19 +61,14 @@ if (isset($id)) {
        <div class="card-title">
            <div> Transaction History: </div>
        </div>
-       <div class="list-group">
-          <?php for each ($result2 as $r): ?>
-              <div class="list-group-item">
-                 <div class="card-body">
+              <div class="card-body">
                      <div>
-                        <div> Transaction Type: <?php safer_echo($r["action_type"]); ?></div>
-                        <div> SourceID: <?php safer_echo($r["act_src_id"]); ?></div>
-                        <div> DestID: <?php safer_echo($r["act_dest_id"]); ?></div>
-                        <div> Created: <?php safer_echo($r["created"]); ?></div>
+                        <div> Transaction Type: <?php safer_echo($result2["action_type"]); ?></div>
+                        <div> SourceID: <?php safer_echo($result2["act_src_id"]); ?></div>
+                        <div> DestID: <?php safer_echo($result2["act_dest_id"]); ?></div>
+                        <div> Created: <?php safer_echo($result2["created"]); ?></div>
                     </div>
-                 </div>
               </div>
-          <?php endforeach; ?>
        </div>
     </div>
 <?php else: ?>
