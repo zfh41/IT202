@@ -35,10 +35,7 @@ if (isset($id)) {
 ?>
 <?php if (isset($result) && !empty($result)): ?>
     <div class="card">
-        <div class="card-title">
-            <?php safer_echo($result["account_number"]); ?>
-        </div>
-        <div class="card-body">
+            <div class="card-body">
             <div>
                 <p>Stats</p>
                 <div> ID: <?php safer_echo($result["id"]); ?></div>
@@ -72,5 +69,5 @@ if (isset($id)) {
        </div>
     </div>
 <?php else: ?>
-<p>Error looking up id...</p>
+<p>No transaction history</p>
 <?php endif; ?>
