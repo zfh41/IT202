@@ -1,10 +1,12 @@
 <?php require_once(__DIR__ . "/partials/nav.php"); ?>
 <?php
 //we use this to safely get the email to display
-$email = "";
-if (isset($_SESSION["user"]) && isset($_SESSION["user"]["email"])) {
-    $email = $_SESSION["user"]["email"];
+$fname = "";
+$lname="";
+if (isset($_SESSION["user"]) && isset($_SESSION["user"]["fname"]) && isset($_SESSION["user"]["lname"])) {
+    $fname = $_SESSION["user"]["fname"];
+    $lname = $_SESSION["user"]["lname"];
     $user = $_SESSION["user"];
 }
 ?>
-<p>Welcome, <?php echo $email; ?></p>
+<p>Welcome, <?php echo $fname; ?> <?php echo $lname; ?></p>
