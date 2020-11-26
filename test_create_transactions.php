@@ -16,7 +16,6 @@ function do_bank_action($account1, $account2, $amountChange, $type){
         $a1total = (int)$result["ExpectedTotal"];
         $a1total -= $amountChange;
 
-
         $stmt = $db->prepare("select sum(amount) as ExpectedTotal from Transactions where act_src_id = :id");
         $stmt->execute([":id"=>$account2]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -47,6 +46,11 @@ function do_bank_action($account1, $account2, $amountChange, $type){
 ?>
 <form method="POST">
         <input type="text" name="account1" placeholder="Account Number">
+        <select name="type">
+                <option value="0">deposit</option>
+                <option value="1">withdraw</option>
+                <option value="2">transfer</option>
+        </select>
 
         <?php if($_GET['type'] == 'transfer') : ?>
         <input type="text" name="account2" placeholder="Other Account Number">
@@ -77,4 +81,3 @@ if(isset($_POST['type']) && isset($_POST['account1']) && isset($_POST['amount'])
 }
 ?>
 
-<?php require(__DIR__ . "/partials/flash.php");
