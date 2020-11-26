@@ -39,13 +39,32 @@ function do_bank_action($account1, $account2, $amountChange, $type){
         $stmt->bindValue(":type", $type);
         $stmt->bindValue(":a2total", $a2total);
         $result = $stmt->execute();
-        echo var_export($result, true);
-        echo var_export($stmt->errorInfo(), true);
+        if($result){
+               	echo("Transaction created successfully!");
+        }
+	else{
+                echo("Error creating transaction.");
+        }
         return $result;
 }
 ?>
+<?php
+    $result=[];
+    $db=getDB();
+    $stmt=$db->prepare("SELECT id,balance FROM Accounts LIMIT 10");
+    $r = $stmt->execute();
+    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
+
 <form method="POST">
-        <input type="text" name="account1" placeholder="Account Number">
+        <label>Account</label>
+        <select name="account1">
+            <?php foreach ($result as $r): ?>
+                <option value="<?php safer_echo($r["id"]); ?>">
+                <?php safer_echo($r["id"]); ?></option>
+            <?php endforeach; ?>
+        </select>
+
         <select name="type">
                 <option value="0">deposit</option>
                 <option value="1">withdraw</option>
@@ -55,10 +74,17 @@ function do_bank_action($account1, $account2, $amountChange, $type){
         <?php if($_GET['type'] == 'transfer') : ?>
         <input type="text" name="account2" placeholder="Other Account Number">
         <?php endif; ?>
-        
-        <input type="number" name="amount" placeholder="$0.00"/>
+
+        <?php if ($_GET['type'] == 'withdraw'): ?>
+            <input type="number" name="amount" placeholder="$0.00" max=$r["balance"]/>
+        <?php else: ?>
+            <input type="number" name="amount" placeholder="$0.00" />
+        <?php endif; ?>
+
+
         <input type="hidden" name="type" value="<?php echo $_GET['type'];?>"/>
-        
+        <input type="text" name="memo" placeholder="memo"/>
+
         <!--Based on sample type change the submit button display-->
         <input type="submit" value="Move Money"/>
 </form>
@@ -78,6 +104,8 @@ if(isset($_POST['type']) && isset($_POST['account1']) && isset($_POST['amount'])
                         do_bank_action($_POST['account1'], $_POST['account2'], ($amount * -1), $type);
                         break;
         }
+
+    
 }
 ?>
 
