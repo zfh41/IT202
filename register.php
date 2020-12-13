@@ -6,6 +6,8 @@ if (isset($_POST["register"])) {
     $password = null;
     $confirm = null;
     $username = null;
+    $fname = null;
+    $lname = null;
     if (isset($_POST["email"])) {
         $email = $_POST["email"];
     }
@@ -17,6 +19,12 @@ if (isset($_POST["register"])) {
     }
     if (isset($_POST["username"])) {
         $username = $_POST["username"];
+    }
+    if (isset($_POST["fname"])) {
+        $fname = $_POST["fname"];
+    }
+    if (isset($_POST["lname"])) {
+        $lname = $_POST["lname"];
     }
     $isValid = true;
     //check if passwords match on the server side
@@ -38,9 +46,9 @@ if (isset($_POST["register"])) {
         $db = getDB();
         if (isset($db)) {
             //here we'll use placeholders to let PDO map and sanitize our data
-            $stmt = $db->prepare("INSERT INTO Users(email, username, password) VALUES(:email,:username, :password)");
+            $stmt = $db->prepare("INSERT INTO Users(email, username, password, fname,lname) VALUES(:email,:username,:password,:fname,:lname)");
             //here's the data map for the parameter to data
-            $params = array(":email" => $email, ":username" => $username, ":password" => $hash);
+            $params = array(":email" => $email, ":username" => $username, ":password" => $hash, ":fname" => $fname, ":lname" => $lname);
             $r = $stmt->execute($params);
             $e = $stmt->errorInfo();
             if ($e[0] == "00000") {
@@ -61,6 +69,12 @@ if (isset($_POST["register"])) {
     }
 }
 //safety measure to prevent php warnings
+if (!isset($fname)) {
+     $fname = "";
+}
+if (!isset($lname)) {
+     $lname = "";
+}
 if (!isset($email)) {
     $email = "";
 }
@@ -74,6 +88,16 @@ if (!isset($username)) {
             <input class="form-control" type="email" id="email" name="email" required
                    value="<?php safer_echo($email); ?>"/>
         </div>
+        <div class="form-group">
+            <label for="fname">FirstName:</label>
+            <input class="form-control" type="text" id="fname" name="fname" required maxlength="60"
+                   value="<?php safer_echo($fname); ?>"/>
+        </div>
+        <div class="form-group">
+            <label for="lname">LastName:</label>
+            <input class="form-control" type="text" id="lname" name="lname" required maxlength="60"
+       	           value="<?php safer_echo($lname); ?>"/>
+       	</div>
         <div class="form-group">
             <label for="user">Username:</label>
             <input class="form-control" type="text" id="user" name="username" required maxlength="60"
