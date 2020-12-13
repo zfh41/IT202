@@ -2,14 +2,10 @@
 
 <?php
 if (isset($_POST["register"])) {
-    $id = null;
     $email = null;
     $password = null;
     $confirm = null;
     $username = null;
-    if (isset($_POST["id"])) {
-        $id=$_POST["id"];
-    }
     if (isset($_POST["email"])) {
         $email = $_POST["email"];
     }
@@ -25,10 +21,11 @@ if (isset($_POST["register"])) {
     $isValid = true;
     //check if passwords match on the server side
     if ($password == $confirm) {
-        echo "Passwords match <br>";
+        //not necessary to show
+        //echo "Passwords match <br>";
     }
     else {
-        echo "Passwords don't match<br>";
+        flash("Passwords don't match");
         $isValid = false;
     }
     if (!isset($email) || !isset($password) || !isset($confirm)) {
@@ -45,24 +42,22 @@ if (isset($_POST["register"])) {
             //here's the data map for the parameter to data
             $params = array(":email" => $email, ":username" => $username, ":password" => $hash);
             $r = $stmt->execute($params);
-            //let's just see what's returned
-            echo "db returned: " . var_export($r, true);
             $e = $stmt->errorInfo();
             if ($e[0] == "00000") {
-                echo "<br>Welcome! You successfully registered, please login.";
+                flash("Successfully registered! Please login.");
             }
             else {
                 if ($e[0] == "23000") {//code for duplicate entry
-                    echo "<br>Either username or email is already registered, please try again";
+                    flash("Username or email already exists.");
                 }
                 else {
-                    echo "uh oh something went wrong: " . var_export($e, true);
+                    flash("An error occurred, please try again");
                 }
             }
         }
     }
     else {
-        echo "There was a validation issue";
+        flash("There was a validation issue");
     }
 }
 //safety measure to prevent php warnings
@@ -73,16 +68,25 @@ if (!isset($username)) {
     $username = "";
 }
 ?>
-<form method="POST">
-    <label style="font-family: Geneva" for="email">Email:</label>
-    <input type="email" id="email" name="email" required value="<?php safer_echo($email); ?>"/> <br/> <br/>
-    <label style="font-family: Geneva" for="user">Username:</label>
-    <input type="text" id="user" name="username" required maxlength="60" value="<?php safer_echo($username); ?>"/> <br/> <br/>
-    <label style="font-family: Geneva" for="p1">Password:</label>
-    <input type="password" id="p1" name="password" required/> <br/> <br/>
-    <label style="font-family: Geneva" for="p2">Confirm Password:</label>
-    <input type="password" id="p2" name="confirm" required/> <br/> <br/>
-    <input type="submit" name="register" value="Register"/>
-</form>
-
-
+    <form method="POST">
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input class="form-control" type="email" id="email" name="email" required
+                   value="<?php safer_echo($email); ?>"/>
+        </div>
+        <div class="form-group">
+            <label for="user">Username:</label>
+            <input class="form-control" type="text" id="user" name="username" required maxlength="60"
+                   value="<?php safer_echo($username); ?>"/>
+        </div>
+        <div class="form-group">
+            <label for="p1">Password:</label>
+            <input class="form-control" type="password" id="p1" name="password" required/>
+        </div>
+        <div class="form-group">
+            <label for="p2">Confirm Password:</label>
+            <input class="form-control" type="password" id="p2" name="confirm" required/>
+        </div>
+        <input class="btn btn-primary" type="submit" name="register" value="Register"/>
+    </form>
+<?php require(__DIR__ . "/partials/flash.php");

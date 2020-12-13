@@ -9,4 +9,4 @@ if (isset($_SESSION["user"]) && isset($_SESSION["user"]["fname"]) && isset($_SES
     $user = $_SESSION["user"];
 }
 ?>
-<p>Welcome, <?php echo $fname; ?> <?php echo $lname; ?></p>
+<p>Welcome, </p> <?php echo $fname?> <?php echo $lname?>

@@ -71,14 +71,21 @@ function do_bank_action($account1, $account2, $amountChange, $type){
                 <option value="2">transfer</option>
         </select>
 
-        <?php if($_GET['type'] == 'transfer') : ?>
-        <input type="text" name="account2" placeholder="Other Account Number">
+        <?php if($_GET['type'] == 'transfer') : ?> <br/>
+            <label>AccountDest</label>
+ 	    <select name="account2">
+                 <?php foreach ($result as $r): ?>
+                    <option value="<?php safer_echo($r["id"]); ?>">
+                    <?php safer_echo($r["id"]); ?></option>
+                 <?php endforeach; ?>
+            </select>
+        
         <?php endif; ?>
 
         <?php if ($_GET['type'] == 'withdraw'): ?>
-            <input type="number" name="amount" placeholder="$0.00" max=$r["balance"]/>
+            <input type="number" min="0" name="amount" placeholder="$0.00" max=$r["balance"]/>
         <?php else: ?>
-            <input type="number" name="amount" placeholder="$0.00" />
+            <input type="number" min="0" name="amount" placeholder="$0.00" />
         <?php endif; ?>
 
 
