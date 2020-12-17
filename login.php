@@ -34,7 +34,7 @@ if (isset($_POST["login"])) {
     if ($isValid) {
         $db = getDB();
         if (isset($db)) {
-            $stmt = $db->prepare("SELECT id, email, username, password from Users WHERE email = :email LIMIT 1");
+            $stmt = $db->prepare("SELECT id, email, username, password, active from Users WHERE email = :email LIMIT 1");
 
             $params = array(":email" => $email);
             $r = $stmt->execute($params);
@@ -45,7 +45,7 @@ if (isset($_POST["login"])) {
                 flash("Something went wrong, please try again");
             }
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
-            if ($result && isset($result["password"])) {
+            if ($result && isset($result["password"]) && $result["active"]==1) {
                 $password_hash_from_db = $result["password"];
                 if (password_verify($password, $password_hash_from_db)) {
                     $stmt = $db->prepare("
@@ -64,6 +64,7 @@ SELECT Roles.name FROM Roles JOIN UserRoles on Roles.id = UserRoles.role_id wher
                     }
                     //on successful login let's serve-side redirect the user to the home page.
                     flash("Log in successful");
+                    calcAPY();
                     die(header("Location: home.php"));
                 }
                 else {
@@ -71,7 +72,7 @@ SELECT Roles.name FROM Roles JOIN UserRoles on Roles.id = UserRoles.role_id wher
                 }
             }
             else {
-                flash("Invalid user");
+                flash("Invalid user or deactivated");
             }
         }
     }

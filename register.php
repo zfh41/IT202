@@ -8,6 +8,7 @@ if (isset($_POST["register"])) {
     $username = null;
     $fname = null;
     $lname = null;
+    $visibility=null;
     if (isset($_POST["email"])) {
         $email = $_POST["email"];
     }
@@ -25,6 +26,9 @@ if (isset($_POST["register"])) {
     }
     if (isset($_POST["lname"])) {
         $lname = $_POST["lname"];
+    }
+    if (isset($_POST["visibility"])) {
+        $visibility=$_POST["visibility"];
     }
     $isValid = true;
     //check if passwords match on the server side
@@ -46,9 +50,9 @@ if (isset($_POST["register"])) {
         $db = getDB();
         if (isset($db)) {
             //here we'll use placeholders to let PDO map and sanitize our data
-            $stmt = $db->prepare("INSERT INTO Users(email, username, password, fname,lname) VALUES(:email,:username,:password,:fname,:lname)");
+            $stmt = $db->prepare("INSERT INTO Users(email, username, password, fname,lname,visibility) VALUES(:email,:username,:password,:fname,:lname,:visibility)");
             //here's the data map for the parameter to data
-            $params = array(":email" => $email, ":username" => $username, ":password" => $hash, ":fname" => $fname, ":lname" => $lname);
+            $params = array(":email" => $email, ":username" => $username, ":password" => $hash, ":fname" => $fname, ":lname" => $lname, ":visibility" => $visibility);
             $r = $stmt->execute($params);
             $e = $stmt->errorInfo();
             if ($e[0] == "00000") {
@@ -110,6 +114,12 @@ if (!isset($username)) {
         <div class="form-group">
             <label for="p2">Confirm Password:</label>
             <input class="form-control" type="password" id="p2" name="confirm" required/>
+        </div>
+        <div class="form-group">
+            <select name="visibility">
+               <option value="0">Public</option>
+               <option value="1">Private</option>
+            </select>
         </div>
         <input class="btn btn-primary" type="submit" name="register" value="Register"/>
     </form>
